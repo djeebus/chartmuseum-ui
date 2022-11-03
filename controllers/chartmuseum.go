@@ -18,7 +18,7 @@ func getCharts() map[string][]models.Chart {
 	l.Printf("Getting charts on url: %s\n", getBaseURL())
 	res, err := httplib.Get(getBaseURL()).Debug(true).Bytes()
 	if err != nil {
-		l.Panic(err.Error)
+		l.Panic(err)
 	}
 
 	charts, err := models.NewCharts(res)
