@@ -1,7 +1,7 @@
 #
 # Stage 1
 #
-FROM library/golang:1.19 as builder
+FROM library/golang:1.19-alpine3.16 as builder
 
 ENV APP_DIR $GOPATH/src/github.com/chartmuseum/ui
 RUN mkdir -p $APP_DIR
@@ -9,14 +9,14 @@ ADD . $APP_DIR
 
 # Compile the binary and statically link
 RUN cd $APP_DIR && \
-    go build -ldflags '-w -s' -o /chartmuseum-ui && \
+    go build -o /chartmuseum-ui && \
     cp -r views/ /views && \
     cp -r static/ /static
 
 #
 # Stage 2
 #
-FROM alpine:3.8
+FROM alpine:3.16
 RUN apk add --no-cache curl cifs-utils ca-certificates \
     && adduser -D -u 1000 chartmuseum
 COPY --from=builder /chartmuseum-ui /chartmuseum-ui
