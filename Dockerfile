@@ -1,13 +1,7 @@
 #
 # Stage 1
 #
-FROM library/golang:1 as builder
-
-# Godep for vendoring
-RUN go get github.com/tools/godep
-
-# Recompile the standard library without CGO
-RUN CGO_ENABLED=0 go install -a std
+FROM library/golang:1.19 as builder
 
 ENV APP_DIR $GOPATH/src/github.com/chartmuseum/ui
 RUN mkdir -p $APP_DIR
@@ -15,7 +9,7 @@ ADD . $APP_DIR
 
 # Compile the binary and statically link
 RUN cd $APP_DIR && \
-    GO111MODULE=auto CGO_ENABLED=0 godep go build -ldflags '-w -s' -o /chartmuseum-ui && \
+    go build -ldflags '-w -s' -o /chartmuseum-ui && \
     cp -r views/ /views && \
     cp -r static/ /static
 
