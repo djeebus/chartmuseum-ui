@@ -1,9 +1,11 @@
 name: release
-on: workflow_dispatch
+
+on:
+  push:
+    tags: ["*"]
+
 jobs:
   docker:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,7 +21,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        if: github.event_name != 'pull_request'
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
